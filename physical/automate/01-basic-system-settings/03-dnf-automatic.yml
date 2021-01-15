@@ -1,0 +1,22 @@
+---
+- name: configure /etc/dnf/automatic.conf
+  hosts: host
+  become: true
+  gather_facts: true
+  vars:
+    path: /etc/dnf/automatic.conf
+    
+  tasks:
+
+    - name: set upgrade_type = security
+      ansible.builtin.lineinfile:
+        path: "{{ path }}"
+        regexp: '^upgrade_type ='
+        line: 'upgrade_type = security'
+
+    - name: set the name of the system
+      ansible.builtin.lineinfile:
+        path: "{{ path }}"
+        regexp: '^system_name'
+        line: 'system_name = {{ ansible_facts.hostname }}'
+...
