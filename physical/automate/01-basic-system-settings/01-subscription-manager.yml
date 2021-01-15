@@ -1,7 +1,7 @@
 ---
 - name: subscribe and enable correct repos
   gather_facts: false 
-  hosts: localhost
+  hosts: host 
   become: true
   vars_files:
     - ./files/rh-acct
@@ -9,7 +9,7 @@
   tasks:
 
     - name: accurately update subscription manager
-      redhat_subscription:
+      community.general.redhat_subscription:
         state: present
         username: "{{ username }}"
         password: "{{ password }}"
@@ -34,6 +34,6 @@
       register: repos_list
 
     - name: print enabled repos
-        debug:
-        var: repos_list.stdout_lines
+      debug:
+        var: repos_list
 ...
