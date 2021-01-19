@@ -1,0 +1,9 @@
+conn_type: 'ethernet'
+conn_name: 'eno1'
+ifname: 'eno1'
+ip4: '192.168.10.10/24'
+gw4: '192.168.10.1'
+auto_conn: true
+dns4:
+- '208.67.222.222'
+- '208.67.220.220'

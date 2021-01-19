@@ -1,0 +1,38 @@
+---
+- name: system update
+  hosts: host
+  become: true
+  gather_facts: false
+
+  tasks:  
+    - name: configure additional repos
+      yum_repository:
+        name: "{{ item.name }}" 
+        description: "{{ item.desc }}"
+        baseurl: "{{ item.url }}"
+        file: redhat
+        enabled: true
+      loop: "{{ repos }}"
+
+    - name: install software packages
+      yum:
+        name: "{{ packages }}"
+        state: latest
+    
+    - name: install container-tools module
+      shell:
+        cmd: "yum module install -y container-tools"
+      register: ctools
+      changed_when: "'Success' in ctools.stdout" 
+
+    - name: install virt module
+      shell:
+        cmd: "yum module install -y virt"
+      register: virt
+      changed_when: "'Success' in virt.stdout" 
+
+    - name: Update all software on system
+      yum:
+        name: '*'
+        state: latest
+...

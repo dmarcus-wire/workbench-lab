@@ -1,0 +1,25 @@
+---
+# Normally, when Ansible runs a play, it makes sure that all managed hosts have completed each task before starting the next task. Serial keyword to run the hosts through the play in batches.
+- name: configure network connection
+  hosts: host
+  become: true 
+  serial: 1  
+
+  #vars_files:
+  #  - ../host_vars/node00.workbench.lab/network.yml
+
+  tasks: 
+    - name: configure "{{ ansible_default_ipv4['interface'] }}"
+      community.general.nmcli: 
+        type: "{{ conn_type }}"
+        conn_name: "{{ conn_name }}"
+        ip4: "{{ ip4 }}"
+        gw4: "{{ gw4 }}"
+        dns4: "{{ dns4 }}"
+        autoconnect: "{{ auto_conn }}"
+        state: present
+
+    # nmcli module does not UP the connection configuration unless system rebooted; must use shell or rhel-system-roles.network
+    - shell:
+        cmd: nmcli con up "{{ ansible_default_ipv4['interface'] }}"
+...

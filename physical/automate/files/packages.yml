@@ -1,6 +1,0 @@
----
-# list of software expected on the host
-packages:
- - name: dnf-automatic
- - name: cockpit*
- - name: "@container-management"

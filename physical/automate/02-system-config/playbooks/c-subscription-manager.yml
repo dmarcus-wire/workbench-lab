@@ -1,0 +1,26 @@
+---
+- name: configure network connection
+  hosts: host
+  gather_facts: false
+  become: true
+  
+  vars_files: 
+    - ../files/rhsm
+
+  tasks:
+  # rh_acct encyrpted with ansible vault
+  # set variables below in the ../inventory/group_vars/all
+    - name: update subscription manager
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ username }}"
+        password: "{{ password }}"
+        syspurpose:
+          usage: "{{ usage }}"
+          role: "{{ role }}"
+          service_level_agreement: "{{ sla }}" 
+        pool_ids:
+          - "{{ ansible }}" 
+          - "{{ epool }}"
+      register: repos_out
+...

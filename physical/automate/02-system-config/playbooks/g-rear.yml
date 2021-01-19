@@ -1,0 +1,16 @@
+---
+# TODO: Need to fix this package dependencies
+- name: relax and recover
+  hosts: host
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: produce bootable image
+      shell:
+        cmd: rear mkrescue -v
+    
+    - name: print available images
+      command:
+        cmd: ls -l /var/lib/rear/output/rear*
+...

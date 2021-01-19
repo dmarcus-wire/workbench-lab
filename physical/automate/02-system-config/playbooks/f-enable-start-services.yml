@@ -1,0 +1,20 @@
+---
+- name: enable and start services
+  hosts: host
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: register insights
+      shell:
+        cmd: insights-client --register
+      register: insights
+      changed_when: "'Success' in insights.stdout"
+
+    - name: enable and start "{{ services }}"
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop: "{{ services }}"
+...

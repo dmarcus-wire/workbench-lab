@@ -1,0 +1,19 @@
+---
+- name: configure hostname
+  hosts: host
+  become: true
+  gather_facts: false
+  serial: 1
+
+  tasks:
+  # variables are set in the host_vars/<hostname>/vars.yml
+  - name: set hostname
+    hostname:
+      name: "{{ hostname }}"
+
+  - name: update /etc/hosts
+    lineinfile:
+      path: /etc/hosts
+      regexp: "{{ hostname }}"
+      line: "{{ ip_addr}} {{ fqdn }} {{ hostname }}"
+...

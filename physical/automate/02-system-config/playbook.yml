@@ -1,0 +1,22 @@
+---
+# configure hostname, fqdn, ip address
+- import_playbook: playbooks/a-hostname.yml
+
+# configure network ipv4 connection details
+- import_playbook: playbooks/b-nmcli-network.yml
+
+# manage registration, subscription and system purpose to the Red Hat Subscription Management entitlement
+- import_playbook: playbooks/c-subscription-manager.yml
+
+# manage and update software packages
+- import_playbook: playbooks/d-yum-update.yml
+
+# configure automatic system updates behavior
+- import_playbook: playbooks/e-dnf-automatic.yml
+
+# enable and start services persistently across reboots
+- import_playbook: playbooks/f-enable-start-services.yml
+
+# validate host for virtualization
+- import_playbook: playbooks/h-virt-host.yml
+...

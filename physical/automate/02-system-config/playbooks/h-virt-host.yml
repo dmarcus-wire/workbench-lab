@@ -1,0 +1,16 @@
+---
+- name: validate virt host
+  hosts: host
+  become: true
+  gather_facts: false
+  # you must ignore errors because virt-host-validate runs tests and prints results
+  ignore_errors: true
+
+  tasks:
+    - shell:
+        cmd: virt-host-validate
+      register: virt
+
+    - debug:
+        var: virt
+...

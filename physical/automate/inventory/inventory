@@ -1,5 +1,2 @@
-#localhost
 [host]
-192.168.10.65
-
-# 192.168.10.[10:249]
+host.workbench.lab
