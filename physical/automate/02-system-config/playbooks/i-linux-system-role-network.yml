@@ -1,0 +1,35 @@
+---
+- hosts: host
+  become: true
+  roles:
+    - linux-system-roles.network
+  vars:
+    # create the bridge profile that will be the parent
+    network_connections:
+        # identifies the connection profile not the name of the networking interface
+      - name: bridge0
+        type: bridge
+        # name of the created interface
+        interface_name: bridge0
+        ip:
+          address: 192.168.10.10/24
+          gateway4: 192.168.10.1
+          dns:
+            - 208.67.222.222
+            - 208.67.220.220
+        # the runtime state activated
+        state: up
+        autoconnect: true
+
+    # create the child to the bridge
+      - slave_type: bridge
+        # sets the current con interface child of bridge0
+        interface_name: "{{ ansible_default_ipv4['interface'] }}"
+        # name of profile created above
+        master: bridge0
+        type: ethernet
+        # name of the created interface
+        name: eno1-child
+        state: up
+        autoconnect: true
+...

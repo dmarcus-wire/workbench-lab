@@ -18,3 +18,4 @@ packages:
 - virt-viewer
 - libvirt-nss
 - libvirt-daemon-config-network
+- rhel-system-roles

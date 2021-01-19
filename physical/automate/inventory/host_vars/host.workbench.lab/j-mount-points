@@ -1,0 +1,23 @@
+---
+partitions:
+    - number: 4
+      start: 70GB
+      end: 100%
+      name: vmstore
+      label: gpt
+      flag: [ lvm ]
+      unit: GB
+
+volume_groups:
+    - name: vmstore
+      dev: /dev/nvme0n1p4
+
+logical_volumes:
+    - lv_name: nodev00
+      size: 50g
+      fstype: xfs
+      vg_name: vmstore
+      mount_path: /mnt/nodev00
+
+mounts:
+- nodev00

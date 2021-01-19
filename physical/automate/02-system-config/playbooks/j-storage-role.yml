@@ -1,0 +1,14 @@
+- name: storage role
+  hosts: host
+  become: true
+  roles:
+    - name: linux-system-roles.storage
+      storage_pools:
+        - name: vmstore
+          disks: 
+            - /dev/nvme0n1p4
+          volumes:
+            - name: nodev00
+              size: "50g"
+              fs_type: xfs
+              mount_point: "/mnt/nodev00"
