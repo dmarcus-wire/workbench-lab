@@ -1,5 +1,5 @@
 - name: storage role
-  hosts: host
+  hosts: host.workbench.lab
   become: true
   roles:
     - name: linux-system-roles.storage

@@ -1,5 +1,0 @@
-services:
-- cockpit.socket
-- dnf-automatic.timer
-- firewalld
-- libvirtd

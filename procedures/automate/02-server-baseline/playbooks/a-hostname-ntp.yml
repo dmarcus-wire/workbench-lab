@@ -1,0 +1,38 @@
+---
+- name: configure hostname
+  hosts: host.workbench.lab
+  become: true
+  gather_facts: false
+  serial: 1
+
+  tasks:
+  # variables are set in the host_vars/<hostname>/a-hostname
+  - name: set hostname
+    hostname:
+      name: "{{ hostname }}"
+
+  - name: update /etc/hosts
+    lineinfile:
+      path: /etc/hosts
+      regexp: "{{ hostname }}"
+      line: "{{ ip_addr}} {{ fqdn }} {{ hostname }}"
+
+  - name: set timezone
+    community.general.timezone:
+      name: "{{ timezone }}"
+
+- hosts: host
+  become: true
+  vars:
+    timesync_ntp_servers:
+      - hostname: 0.north-america.pool.ntp.org
+        iburst: yes
+      - hostname: 1.north-america.pool.ntp.org
+        iburst: yes
+      - hostname: 3.north-america.pool.ntp.org
+        iburst: yes
+      - hostname: 4.north-america.pool.ntp.org
+        iburst: yes
+  roles:
+    - linux-system-roles.timesync
+...

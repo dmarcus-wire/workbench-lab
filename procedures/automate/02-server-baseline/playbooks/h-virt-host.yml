@@ -1,6 +1,6 @@
 ---
 - name: validate virt host
-  hosts: host
+  hosts: host.workbench.lab
   become: true
   gather_facts: false
   # you must ignore errors because virt-host-validate runs tests and prints results

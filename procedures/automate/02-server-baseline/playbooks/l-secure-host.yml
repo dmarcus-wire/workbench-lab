@@ -1,0 +1,48 @@
+---
+- name: secure host
+  hosts: host.workbench.lab
+  become: true
+
+  tasks:
+    - name: update security
+      yum:
+        name: '*'
+        security: true
+        skip_broke: true
+      register: secure_update
+
+    - debug:
+        var: "{{ secure_update }}"
+
+    - name: ensure firewall is enabled and running
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: ensure selinux is enforcing
+      ansible.builtin.selinux:
+        policy: targeted
+        state: enforcing
+
+    - name: prohibit superuser login via ssh
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regex: '^PermitRootLogin '
+        # change to yes to prohibit
+        line: 'PermitRootLogin no' 
+
+    - name: prohibit password based authentication for ssh
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regex: '^PasswordAuthentication '
+        # change to no to prohibit
+        line: 'PasswordAuthentication no'
+    
+    - name: reload sshd service
+      service:
+        name: sshd
+        state: reload
+...

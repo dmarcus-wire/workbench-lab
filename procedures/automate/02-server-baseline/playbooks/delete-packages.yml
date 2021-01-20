@@ -1,0 +1,11 @@
+---
+- name: system update
+  hosts: host.workbench.lab
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    - yum:
+        name: "{{ delete }}"
+        state: absent

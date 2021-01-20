@@ -1,7 +1,7 @@
 ---
 partitions:
     - number: 4
-      start: 70GB
+      start: 82GB
       end: 100%
       name: vmstore
       label: gpt

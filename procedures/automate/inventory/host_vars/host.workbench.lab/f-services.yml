@@ -1,0 +1,6 @@
+---
+services:
+- cockpit
+- firewalld
+- libvirtd
+...

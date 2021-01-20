@@ -7,23 +7,8 @@ The configurations below follow the RHEL 8 CONFIGURING BASIC SYSTEM SETTINGS fou
 # hostnamectl status
 # hostnamectl set-hostname node00
 ```
-
-## set network connection
-```
-# nmcli dev
-# nmcli con
-# nmcli con add con-name “eno1” ifname “eno1” type ethernet ipv4.method manual ipv4.addresses 192.168.86.240 ipv4.gateway 192.186.68.1 ipv4.dns “208.67.222.222,208.67.220.220” connection.autoconnect true
-# nmcli con reload
-```
-
-## set /etc/resolv
-```
-# cat /etc/resolv.conf
- 	> nameserver 208.67.222.222
- 	> nameserver 208.67.220.220
-# systemctl reload networkmanager
-# nslookup google.com
-```
+> automated with: \
+[a-hostname.yml](procedures/automate/02-server-baseline/playbooks/a-hostname.yml)
 
 ## set system time
 ```
@@ -36,10 +21,33 @@ The configurations below follow the RHEL 8 CONFIGURING BASIC SYSTEM SETTINGS fou
 # systemctl restart chronyd
 # chronyc sources -v
 ```
+> automated with: \
+[a-hostname.yml](procedures/automate/02-server-baseline/playbooks/a-hostname.yml)
+## set network connection
+```
+# nmcli dev
+# nmcli con
+# nmcli con add con-name “eno1” ifname “eno1” type ethernet ipv4.method manual ipv4.addresses 192.168.86.240 ipv4.gateway 192.186.68.1 ipv4.dns “208.67.222.222,208.67.220.220” connection.autoconnect true
+# nmcli con reload
+```
+> automated with: \
+[b-network-nmcli.yml](procedures/automate/02-server-baseline/playbooks/b-nmcli-network.yml) \
+[b-network-role.yml](procedures/automate/02-server-baseline/playbooks/b-network-role.yml)
+
+## set /etc/resolv
+```
+# cat /etc/resolv.conf
+ 	> nameserver 208.67.222.222
+ 	> nameserver 208.67.220.220
+# systemctl reload networkmanager
+# nslookup google.com
+```
+> automated with: \
+[b-network-nmcli.yml](procedures/automate/02-server-baseline/playbooks/b-nmcli-network.yml) \
+[b-network-role.yml](procedures/automate/02-server-baseline/playbooks/b-network-role.yml)
 
 ## set subscription manager
 When auto-attaching a system, the subscription service checks if the system is physical or virtual, as well as how many sockets are on the system. 
-
 ```
 # subscription-manager register --username [username] --password [password]
 # subscription-manager role --set="Red Hat Enterprise Linux Server"
@@ -47,6 +55,8 @@ When auto-attaching a system, the subscription service checks if the system is p
 # subscription-manager usage --set="Development/Test"
 # subscription-manager attach
 ```
+> automated with: \
+[c-subscription-manager.yml](procedures/automate/02-server-baseline/playbooks/c-subscription-manager.yml)
 
 ## set system purpose
 System Purpose ensures that the entitlement server auto-attaches the most appropriate subscription to your system. 
@@ -57,6 +67,8 @@ System Purpose ensures that the entitlement server auto-attaches the most approp
 # syspurpose set-usage "Production"
 # syspurpose show
 ```
+> automated with: \
+[c-subscription-manager.yml](procedures/automate/02-server-baseline/playbooks/c-subscription-manager.yml)
 
 ## install software
 1. ansible dnf-automatic cockpit*
@@ -70,6 +82,9 @@ System Purpose ensures that the entitlement server auto-attaches the most approp
 # yum install ansible -y
 # yum module install container-tools
 ```
+> automated with: \
+[c-subscription-manager.yml](procedures/automate/02-server-baseline/playbooks/c-subscription-manager.yml)
+[d-yum-update.yml](procedures/automate/02-server-baseline/playbooks/d-yum-update.yml)
 
 ## dnf configuration
 Install, download and apply updates per /etc/dnf/automatic.conf
@@ -84,6 +99,8 @@ On login, messages about updates displayed
 > emit_via = motd
 # systemctl enable dnf-automatic.timer; systemctl start dnf-automatic.timer
 ```
+> automated with: \
+[e-dnf-automatic.yml](procedures/automate/02-server-baseline/playbooks/e-dnf-automatic.yml)
 
 ## enable cockpit
 ```
@@ -93,6 +110,8 @@ On login, messages about updates displayed
 # firewall-cmd --reload
 # firefox --new-window https://localhost:9090 
 ```
+> automated with: \
+[f-enable-start-services.yml](procedures/automate/02-server-baseline/playbooks/f-enable-start-services.yml)
 
 ## enable insights
 ```
@@ -100,23 +119,8 @@ On login, messages about updates displayed
 # insights-client --status
 # cat /etc/insights-client/insights-client.conf
 ```
-
-## secure system
-
-1. Upgrade the latest available packages with security errata
-1. Upgrade to last security errata packages
-1. Review services to enable/disable
-1. If your system has no printers, disable cups, for example
-```
-# yum update --security
-# yum update-minimal --security
-# systemctl status firewalld
-# systemctl start firewalld; systemctl enable firewalld
-# systemctl list-units | grep service
-# systemctl mask cups
-# getenforce
-# cat /etc/selinux/config
-```
+> automated with: \
+[f-enable-start-services.yml](procedures/automate/02-server-baseline/playbooks/f-enable-start-services.yml)
 
 ## sos reports
 1. install packages
@@ -136,7 +140,24 @@ $ redhat-support-tool addattachment -c CASE_NUMBER /path/to/sosreport
 $ redhat-support-tool addattachment -c CASE_NUMBER -f /path/to/sosreport
 $ redhat-support-tool addattachment -c CASE_NUMBER -s 1024 -f /path/to/vmcore
 ```
+## secure system
 
+1. Upgrade the latest available packages with security errata
+1. Upgrade to last security errata packages
+1. Review services to enable/disable
+1. If your system has no printers, disable cups, for example
+```
+# yum update --security
+# yum update-minimal --security
+# systemctl status firewalld
+# systemctl start firewalld; systemctl enable firewalld
+# systemctl list-units | grep service
+# systemctl mask cups
+# getenforce
+# cat /etc/selinux/config
+```
+> automated with: \
+[l-secure-host.yml](procedures/automate/02-server-baseline/playbooks/l-secure-host.yml)
 ## generate SSH keys
 1. create a private key and matching public key for authentication
 1. public key needs to be copied to the destination system
@@ -144,7 +165,8 @@ $ redhat-support-tool addattachment -c CASE_NUMBER -s 1024 -f /path/to/vmcore
 # ssh-keygen
 # ssh-copy-id user@host.com (or ip address)
 ```
-
+> automated with: \
+[l-secure-host.yml](procedures/automate/02-server-baseline/playbooks/l-secure-host.yml)
 ## prohibit the superuser from logging in using ssh
 1. OpenSSH server uses the PermitRootLogin configuration setting in the /etc/ssh/sshd_config
 1. set PermitRootLogin to no
@@ -153,7 +175,8 @@ $ redhat-support-tool addattachment -c CASE_NUMBER -s 1024 -f /path/to/vmcore
 # vim /etc/ssh/sshd_config
 > PermitRootLogin no
 ```
-
+> automated with: \
+[l-secure-host.yml](procedures/automate/02-server-baseline/playbooks/l-secure-host.yml)
 ## prohibit password-based authentication for ssh
 1. Allow only private key-based logins to the remote command line
    - Attackers cannot use password guessing attacks to remotely break into known accounts on the system.
@@ -163,25 +186,15 @@ $ redhat-support-tool addattachment -c CASE_NUMBER -s 1024 -f /path/to/vmcore
 # vim /etc/ssh/sshd_config
 > PasswordAuthentication yes
 ```
-
+> automated with: \
+[l-secure-host.yml](procedures/automate/02-server-baseline/playbooks/l-secure-host.yml)
 ## reload sshd service
 whenever you change the /etc/ssh/sshd_config file, you must reload the sshd service for changes to take effect
 
 ```
 # systemctl reload sshd
 ```
-
+> automated with: \
+[l-secure-host.yml](procedures/automate/02-server-baseline/playbooks/l-secure-host.yml)
 ## set StrictHostKeyChecking
 Set the StrictHostKeyChecking parameter to yes in the user-specific ~/.ssh/config file or the system-wide /etc/ssh/ssh_config to cause the ssh command to always abort the SSH connection if the public keys do not match.
-
-## configure users
-1. Review user and group ide config 
-1. Start new users at 5000 by default
-1. Review groups
-
-```
-# cat /usr/share/doc/setup*
-# vim /etc/login.defs
-> UID_MIN
-# cat /etc/groups
-```

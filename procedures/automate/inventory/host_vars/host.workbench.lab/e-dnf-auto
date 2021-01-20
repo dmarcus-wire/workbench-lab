@@ -1,2 +1,0 @@
-dnf_auto_path: "/etc/dnf/automatic.conf"
-upgrade_type: "upgrade_type = security"

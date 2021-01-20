@@ -1,0 +1,51 @@
+---
+packages:
+- dnf-automatic
+- cockpit
+- cockpit-composer
+- cockpit-dashboard
+- cockpit-machines
+- cockpit-packagekit
+- cockpit-pcp
+- cockpit-podman
+- cockpit-session-recording
+- rear 
+- rhel-system-roles
+- redhat-support-tool
+
+rear:
+- genisoimage 
+- syslinux 
+- crash 
+- sos 
+
+
+virtual:
+- virt-install
+- virt-viewer
+- libvirt-nss
+- libvirt-daemon-config-network
+
+delete:
+- dnf-automatic
+- cockpit
+- cockpit-composer
+- cockpit-dashboard
+- cockpit-machines
+- cockpit-packagekit
+- cockpit-pcp
+- cockpit-podman
+- cockpit-session-recording
+- rear 
+- rhel-system-roles
+- redhat-support-tool
+- genisoimage 
+- syslinux 
+- crash 
+- sos 
+- virt-install
+- virt-viewer
+- libvirt-nss
+- libvirt-daemon-config-network
+
+...

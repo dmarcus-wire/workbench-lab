@@ -1,0 +1,6 @@
+---
+repos:
+- name: rhel-8-for-x86_64-baseos-debug-rpms
+  desc: relax and recover 
+  url: https://cdn.redhat.com/content/dist/rhel8/$releasever/x86_64/baseos/os
+...

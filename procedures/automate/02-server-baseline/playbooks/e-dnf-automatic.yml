@@ -1,10 +1,16 @@
 ---
 - name: configure dnf-automatic
-  hosts: host
+  hosts: host.workbench.lab
   become: true
   gather_facts: true
     
   tasks:
+
+    - name: ensure dnf-automatic is installed
+      yum:
+        name: dnf-automatic
+        state: present
+
     - name: set upgrade_type to "{{ upgrade_type }}"
       ansible.builtin.lineinfile:
         path: "{{ dnf_auto_path }}"
@@ -17,7 +23,7 @@
         regexp: '^system_name'
         line: system_name = "{{ ansible_facts['hostname'] }}"
 
-#    - name: download and install available updates per type "{{ upgrade_type }}"
-#      shell:
-#        cmd: systemctl enable dnf-automatic.timer; systemctl start dnf-automatic.timer
+    - name: download and install available updates per type "{{ upgrade_type }}"
+      shell:
+        cmd: systemctl enable dnf-automatic-install.timer && systemctl start dnf-automatic-install.timer
 ...

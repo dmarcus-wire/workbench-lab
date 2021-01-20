@@ -1,20 +1,15 @@
 ---
 - name: enable and start services
-  hosts: host
+  hosts: host.workbench.lab
   become: true
   gather_facts: false
 
   tasks:
-    - name: register insights
-      shell:
-        cmd: insights-client --register
-      register: insights
-      changed_when: "'Success' in insights.stdout"
 
-    - name: enable and start "{{ services }}"
+    - name: enable and start services
       service:
-        name: "{{ item }}"
+        name: "{{ services }}"
         state: started
         enabled: true
-      loop: "{{ services }}"
+      ignore_errors: true
 ...

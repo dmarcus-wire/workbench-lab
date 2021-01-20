@@ -1,0 +1,22 @@
+---
+- name: network role configuration for eno1
+  hosts: host.workbench.lab
+  become: true
+  vars:
+    network_connections:
+    - name: eno1
+        interface_name: eno1
+        ip:
+          address: 192.168.10.10/24
+          gateway: 192.168.10.1
+          dns:
+            - 208.67.222.222
+            - 207.67.220.220
+        status: up
+        type: ethernet
+        autoconnect: true
+    network_allow_restart: true
+
+  roles:
+    - linux-system-roles.network
+...
