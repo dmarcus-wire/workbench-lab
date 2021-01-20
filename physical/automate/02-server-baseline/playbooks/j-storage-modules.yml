@@ -82,5 +82,14 @@
         path: "{{ item.mount_path }}/test.delete"
         state: absent
       loop: "{{ logical_volumes }}"
-        
+
+    - name: copy the pool-definition file to target
+      copy:
+        src: ../files/pool-definition.xml
+        dest: ~/pool-definition.xml
+
+      # be sure to update the pool-definition.xml
+    - name: create the libvirt storage pool
+      command: virsh pool-define ~/pool-definition.xml && virsh pool-start 
+      ignore_errors: true    
 ...

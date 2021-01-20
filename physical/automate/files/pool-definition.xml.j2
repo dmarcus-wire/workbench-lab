@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+# DO NOT MAKE LOCAL MODIFICATIONS TO THIS FILE AS THEY WILL BE LOST
+
+<pool type='logical'>
+  <name>http-server-pool</name>
+  <uuid>33259fd3-1c5d-4c94-95ba-6051780cd27e</uuid>
+  <capacity unit='bytes'>0</capacity>
+  <allocation unit='bytes'>0</allocation>
+  <available unit='bytes'>0</available>
+  <source>
+    <name>vmstore</name>
+    <format type='lvm2'/>
+  </source>
+  <target>
+    <path>/dev/vmstore</path>
+  </target>
+</pool>
+
