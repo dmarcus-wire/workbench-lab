@@ -6,7 +6,7 @@
   serial: 1
 
   tasks:
-  # variables are set in the host_vars/<hostname>/vars.yml
+  # variables are set in the host_vars/<hostname>/a-hostname
   - name: set hostname
     hostname:
       name: "{{ hostname }}"

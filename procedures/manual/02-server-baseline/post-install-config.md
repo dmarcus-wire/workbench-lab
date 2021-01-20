@@ -1,6 +1,6 @@
-# Configure post-install
+# RHEL 8.x OS post install config
 
-The configurations below follow the RHEL 8 CONFIGURING BASIC SYSTEM SETTINGS found here: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/configuring_basic_system_settings/index
+The configurations below follow the RHEL 8 CONFIGURING BASIC SYSTEM SETTINGS found [here](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/configuring_basic_system_settings/index).
 
 ## set hostname
 ```
@@ -138,6 +138,41 @@ $ redhat-support-tool addattachment -c CASE_NUMBER -s 1024 -f /path/to/vmcore
 ```
 
 ## generate SSH keys
+1. create a private key and matching public key for authentication
+1. public key needs to be copied to the destination system
+```
+# ssh-keygen
+# ssh-copy-id user@host.com (or ip address)
+```
+
+## prohibit the superuser from logging in using ssh
+1. OpenSSH server uses the PermitRootLogin configuration setting in the /etc/ssh/sshd_config
+1. set PermitRootLogin to no
+   - alternatively, prevent password-based authentication but allow private key-based authentication for root, set the PermitRootLogin parameter to without-password
+```
+# vim /etc/ssh/sshd_config
+> PermitRootLogin no
+```
+
+## prohibit password-based authentication for ssh
+1. Allow only private key-based logins to the remote command line
+   - Attackers cannot use password guessing attacks to remotely break into known accounts on the system.
+   - With passphrase-protected private keys, an attacker needs both the passphrase and a copy of the private key. With passwords, an attacker just needs the password.
+1. set PasswordAuthentication no to prohibit users to use password-based authentication while logging in
+```
+# vim /etc/ssh/sshd_config
+> PasswordAuthentication yes
+```
+
+## reload sshd service
+whenever you change the /etc/ssh/sshd_config file, you must reload the sshd service for changes to take effect
+
+```
+# systemctl reload sshd
+```
+
+## set StrictHostKeyChecking
+Set the StrictHostKeyChecking parameter to yes in the user-specific ~/.ssh/config file or the system-wide /etc/ssh/ssh_config to cause the ssh command to always abort the SSH connection if the public keys do not match.
 
 ## configure users
 1. Review user and group ide config 
@@ -149,66 +184,4 @@ $ redhat-support-tool addattachment -c CASE_NUMBER -s 1024 -f /path/to/vmcore
 # vim /etc/login.defs
 > UID_MIN
 # cat /etc/groups
-```
-
-## configure virtualization
-```
-# yum module install virt
-# yum install virt-install virt-viewer libvirt-nss libvirt-daemon-config-network
-# systemctl start libvirtd
-# virt-host-validate
-```
-
-## Create Bridge for external access to VMs
-Bridged mode is required to configure externally visible vms 
-Review the ip config of the ethernet interface
-1. Create a bridge connection for eno1
-1. Review the interfaces
-1. A bridge slave interface needs to be established between physical device eno1 (slave) and bridge0 connection (master)
-1. DOWN the eno1 connection
-1. UP the bridge0 connection
-1. Ping tests should work (if bridge-slave-eno1 is up)
-Bridge connection is active, but not visible to KVM
-1. Write bridge file for KVM network configuration
-1. Use file to define the new network
-1. Start the new bridge0 network
-1. List networks 
-```
-# nmcli con add type bridge con-name bridge0 ifname bridge0 ipv4.address 192.168.86.240 ipv4.gateway 192.168.86.1 ipv4.dns ‘208.67.222.222,208.67.220.220’ ipv4.method manual
-# nmcli dev
-# nmcli con add type bridge-slave ifname eno1 master bridge0
-# nmcli con down eno1
-# nmcli con up bridge0
-# virsh net-list --all 
-# vim /tmp/bridge0.xml
-<network>
-  <name>bridge0</name>
-  <forward mode=”bridge” />
-  <bridge name=”bridge0” />
-</network>
-# virsh net-define /tmp/bridge0.xml
-# virsh net-start bridge0
-# virsh net-autostart bridge0
-# virsh net-list --all
-```
-
-## Create LVM Partitions 
-# parted
-> print
-> mkpart > name > format > start > end
-> print > quit
-
-## Create Logical Volume against remaining storage
-1. understand remaining storage (~950GB remaining)
-1. create partition
-1. create physical volume
-1. create logical volume
-```
-# lsblk
-# pvcreate /dev/nvme0n1p#
-# vgcreate node#vg /dev/nvme0n1p#
-# mkdir /mnt/node#
-# mount /dev/mapper/node1vg-node1lv /mnt/node1
-# df -h
-# umount /mnt/node1
 ```
