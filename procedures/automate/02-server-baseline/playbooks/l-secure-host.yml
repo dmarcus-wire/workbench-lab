@@ -8,7 +8,7 @@
       yum:
         name: '*'
         security: true
-        skip_broke: true
+      ignore_errors: true
       register: secure_update
 
     - debug:
@@ -30,7 +30,7 @@
         path: /etc/ssh/sshd_config
         state: present
         regex: '^PermitRootLogin '
-        # change to yes to prohibit
+        # change to no to prohibit
         line: 'PermitRootLogin no' 
 
     - name: prohibit password based authentication for ssh
@@ -44,5 +44,5 @@
     - name: reload sshd service
       service:
         name: sshd
-        state: reload
+        state: reloaded
 ...

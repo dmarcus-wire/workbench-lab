@@ -1,4 +1,10 @@
 ---
+- name: install virt module
+  shell:
+    cmd: "yum module install -y virt"
+  register: virt
+  changed_when: "'Success' in virt.stdout" 
+
 - shell:
     cmd: virt-host-validate
   register: virt

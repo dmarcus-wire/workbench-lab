@@ -32,4 +32,5 @@
         cmd: insights-client --register
       register: insights
       changed_when: "'Success' in insights.stdout"
+
 ...

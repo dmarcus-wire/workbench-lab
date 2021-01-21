@@ -1,0 +1,13 @@
+---
+- name: system update
+  hosts: host
+  become: true
+  gather_facts: false
+
+  tasks:
+  
+    - name: install container-tools module
+      shell:
+        cmd: "yum module install -y container-tools"
+      register: ctools
+      changed_when: "'Success' in ctools.stdout" 
