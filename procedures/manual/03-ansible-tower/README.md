@@ -4,8 +4,7 @@
 1. download the latest setup: https://access.redhat.com/downloads/content/480
 1. download and unpack the tar 
 1. go to ansible-tower-setup... folder
-1. edit the inventory with 
-   - add host under [tower]
+1. minimum edit the inventory with 
    - update admin_password=''
    - update pg_password=''
 1. run the setup script
@@ -21,4 +20,4 @@
 # awx-manage changepassword admin
 ```
 
-![image](images/tower-gui.png)
+![image](../images/tower-gui.png)
