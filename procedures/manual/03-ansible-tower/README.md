@@ -21,4 +21,4 @@
 # awx-manage changepassword admin
 ```
 
-[!image](images/tower-gui.png)
+![image](images/tower-gui.png)
