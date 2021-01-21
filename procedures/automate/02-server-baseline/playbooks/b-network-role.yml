@@ -1,6 +1,6 @@
 ---
 - name: network role configuration for eno1
-  hosts: host.workbench.lab
+  hosts: all
   become: true
   vars:
     network_connections:

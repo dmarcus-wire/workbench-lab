@@ -1,0 +1,27 @@
+---
+- name: configure additional repos
+  yum_repository:
+    name: "{{ item.name }}" 
+    description: "{{ item.desc }}"
+    baseurl: "{{ item.url }}"
+    file: redhat
+    enabled: true
+  loop: "{{ repos }}"
+
+- name: install software packages
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  ignore_errors: true
+
+- name: install container-tools module
+  shell:
+    cmd: "yum module install -y container-tools"
+  register: ctools
+  changed_when: "'Success' in ctools.stdout" 
+
+- name: install virt module
+  shell:
+    cmd: "yum module install -y virt"
+  register: virt
+  changed_when: "'Success' in virt.stdout" 

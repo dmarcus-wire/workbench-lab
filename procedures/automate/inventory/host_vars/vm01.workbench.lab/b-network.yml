@@ -1,0 +1,11 @@
+---
+conn_type: 'ethernet'
+conn_name: 'enp1s0'
+ifname: 'enp1s0'
+ip4: '192.168.10.11/24'
+gw4: '192.168.10.1'
+auto_conn: true
+dns4:
+- '208.67.222.222'
+- '208.67.220.220'
+...

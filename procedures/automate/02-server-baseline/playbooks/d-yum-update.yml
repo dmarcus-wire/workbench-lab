@@ -1,6 +1,6 @@
 ---
 - name: system update
-  hosts: host.workbench.lab
+  hosts: all
   become: true
   gather_facts: false
 

@@ -1,6 +1,6 @@
 ---
 - name: create physical partition
-  hosts: host.workbench.lab
+  hosts: host
   become: true
   
   tasks:

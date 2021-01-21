@@ -1,0 +1,10 @@
+---
+# Because the managed host would not have SSH key-based authentication configured yet, you would have to run the playbook using the ansible-playbook command with the --ask-pass option in order for the command to authenticate as the remote user.
+- name: create "{{ sysadmin }}" sudo nopassword
+  copy:
+    content: "{{ sysadmin }} ALL=(ALL) NOPASSWD:ALL" 
+    dest: "/etc/sudoers.d/{{ sysadmin }}"
+    mode: 0400
+    owner: root
+    group: root
+...

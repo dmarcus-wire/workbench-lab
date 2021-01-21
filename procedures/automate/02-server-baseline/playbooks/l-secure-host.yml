@@ -1,6 +1,6 @@
 ---
 - name: secure host
-  hosts: host.workbench.lab
+  hosts: all
   become: true
 
   tasks:

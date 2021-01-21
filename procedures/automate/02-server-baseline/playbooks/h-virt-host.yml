@@ -1,16 +1,19 @@
 ---
 - name: validate virt host
-  hosts: host.workbench.lab
+  hosts: host
   become: true
   gather_facts: false
   # you must ignore errors because virt-host-validate runs tests and prints results
   ignore_errors: true
 
   tasks:
+    - name: install virt module
+      shell:
+        cmd: "yum module install -y virt"
+      register: virt
+      changed_when: "'Success' in virt.stdout" 
+
     - shell:
         cmd: virt-host-validate
       register: virt
-
-    - debug:
-        var: virt
 ...

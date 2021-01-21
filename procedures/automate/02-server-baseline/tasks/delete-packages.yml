@@ -1,0 +1,4 @@
+---
+- yum:
+    name: "{{ delete }}"
+    state: absent

@@ -1,0 +1,9 @@
+---
+- name: produce bootable image
+  shell:
+    cmd: rear mkrescue -v
+
+- name: print available images
+  command:
+    cmd: ls -l /var/lib/rear/output/rear*
+...

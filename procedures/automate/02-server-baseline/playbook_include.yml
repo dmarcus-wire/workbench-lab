@@ -1,0 +1,17 @@
+---
+- name: baseline config for all servers
+  hosts: web
+  become: true
+  vars_files: 
+    - files/rhsm
+
+  tasks: 
+
+    - include_tasks: tasks/a-hostname-ntp.yml
+    - include_tasks: tasks/b-nmcli-network.yml
+    # this tasks includes a vaulted file, run with --vault-id @prompt
+    - include_tasks: tasks/c-subscription-manager.yml
+    - include_tasks: tasks/e-dnf-automatic.yml
+    - include_tasks: tasks/k-admin-config.yml
+    - include_tasks: tasks/i-secure-host.yml
+...

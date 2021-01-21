@@ -1,0 +1,18 @@
+---
+#vars_files:
+#  - ../host_vars/node00.workbench.lab/network.yml
+- name: configure "{{ conn_name }}"
+  community.general.nmcli: 
+    type: "{{ conn_type }}"
+    ifname: "{{ ifname }}"
+    conn_name: "{{ conn_name }}"
+    ip4: "{{ ip4 }}"
+    gw4: "{{ gw4 }}"
+    dns4: "{{ dns4 }}"
+    autoconnect: "{{ auto_conn }}"
+    state: present
+
+# nmcli module does not UP the connection configuration unless system rebooted; must use shell or rhel-system-roles.network
+- shell:
+    cmd: nmcli con up "{{ conn_name }}"
+...

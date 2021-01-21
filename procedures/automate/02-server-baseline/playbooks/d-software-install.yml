@@ -1,6 +1,6 @@
 ---
 - name: system update
-  hosts: host.workbench.lab
+  hosts: host
   become: true
   gather_facts: false
 
@@ -26,8 +26,3 @@
       register: ctools
       changed_when: "'Success' in ctools.stdout" 
 
-    - name: install virt module
-      shell:
-        cmd: "yum module install -y virt"
-      register: virt
-      changed_when: "'Success' in virt.stdout" 

@@ -1,2 +1,8 @@
 [host]
 host.workbench.lab
+
+[web]
+vm01.workbench.lab
+
+[load]
+vm02.workbench.lab

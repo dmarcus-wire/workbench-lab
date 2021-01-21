@@ -1,6 +1,6 @@
 ---
 - name: enable and start services
-  hosts: host.workbench.lab
+  hosts: host
   become: true
   gather_facts: false
 

@@ -1,6 +1,6 @@
 ---
 - name: configure hostname
-  hosts: host.workbench.lab
+  hosts: all
   become: true
   gather_facts: false
   serial: 1

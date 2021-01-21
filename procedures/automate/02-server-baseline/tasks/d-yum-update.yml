@@ -1,0 +1,7 @@
+---
+- name: Update all software on system
+  yum:
+    name: '*'
+    state: latest
+    update_cache: true
+...

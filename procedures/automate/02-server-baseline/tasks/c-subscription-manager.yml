@@ -1,0 +1,26 @@
+---
+# rh_acct encyrpted with ansible vault
+# set variables below in the ../inventory/group_vars/all
+- name: update subscription manager
+  community.general.redhat_subscription:
+    state: present
+    username: "{{ username }}"
+    password: "{{ password }}"
+    force_register: true
+    auto_attach: true
+    syspurpose:
+      usage: "{{ usage }}"
+      role: "{{ role }}"
+      service_level_agreement: "{{ sla }}" 
+      sync: true
+    pool_ids:
+      - "{{ ansible }}" 
+      - "{{ epool }}"
+  register: repos_out
+
+- name: register insights
+  shell:
+    cmd: insights-client --register
+  register: insights
+  changed_when: "'Success' in insights.stdout"
+...

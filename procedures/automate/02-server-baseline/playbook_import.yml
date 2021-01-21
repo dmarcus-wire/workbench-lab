@@ -1,35 +1,14 @@
 ---
-# configure sysadmin account
 - import_playbook: playbooks/k-admin-config.yml
-
-# configure hostname, fqdn, ip address, ntp
 - import_playbook: playbooks/a-hostname-ntp.yml
-
-# configure network ipv4 connection details
 - import_playbook: playbooks/b-nmcli-network.yml
-
-# manage registration, subscription and system purpose to the Red Hat Subscription Management entitlement
 # if run, uses vault file and command needs --vault-id @prompt
 - import_playbook: playbooks/c-subscription-manager.yml
-
-# install software packages
 - import_playbook: playbooks/d-software-install.yml
-
-# update all software on system
 - import_playbook: playbooks/d-yum-update.yml
-
-# configure automatic system updates behavior
 - import_playbook: playbooks/e-dnf-automatic.yml
-
-# enable and start services persistently across reboots
 - import_playbook: playbooks/f-enable-start-services.yml
-
-# validate host for virtualization
 - import_playbook: playbooks/h-virt-host.yml
-
-# configure virtual network
-- import_playbook: playbooks/i-linux-system-role-network.yml
-
-# configure storage
+- import_playbook: playbooks/i-virt-bridge-network.yml
 - import_playbook: playbooks/j-storage-modules.yml
 ...

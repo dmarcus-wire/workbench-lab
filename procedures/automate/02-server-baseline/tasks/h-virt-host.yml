@@ -1,0 +1,8 @@
+---
+- shell:
+    cmd: virt-host-validate
+  register: virt
+
+- debug:
+    var: virt
+...

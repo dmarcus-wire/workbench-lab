@@ -1,0 +1,7 @@
+---
+ansible_host: 192.168.10.11
+hostname: vm01.workbench.lab
+fqdn: vm01.workbench.lab
+ip_addr: 192.168.10.11/24
+timezone: "America/Denver"
+...

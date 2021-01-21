@@ -1,6 +1,6 @@
 ---
 - name: configure dnf-automatic
-  hosts: host.workbench.lab
+  hosts: host
   become: true
   gather_facts: true
     

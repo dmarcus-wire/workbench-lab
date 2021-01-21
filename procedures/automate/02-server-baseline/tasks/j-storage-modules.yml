@@ -1,0 +1,80 @@
+---
+- name: print host facts
+  debug:
+    var: ansible_facts['devices']['nvme0n1']
+
+- name: create mounts points
+  file:
+    state: directory
+    path: "{{ item.mount_path }}"
+    mode: 0755
+  loop: "{{ logical_volumes }}"
+
+- name: create new partition 
+  community.general.parted:
+    device: /dev/nvme0n1
+    # Creates the partition number 4
+    number: "{{ item.number }}"
+    # set name for partition number
+    name: "{{ item.name }}"
+    # Ensures the partition is available.
+    state: present
+    # Sets the label b/c parted module always runs MKLABEL and could wipe your drive if mounted
+    label: "{{ item.label }}"
+    flags: "{{ item.flag }}"
+    unit: "{{ item.unit }}"
+    # MUST set the start since data is already on this drive
+    part_start: "{{ item.start }}"
+    part_end: "{{ item.end }}"
+  loop: "{{ partitions }}"
+
+- name: create the volume groups
+  community.general.lvg: 
+    # The name of the volume group.
+    vg: "{{ item.name }}"
+    # List of comma-separated devices to be configured as physical volumes for the volume group.
+    pvs: "{{ item.dev }}"
+    # Creates or removes the volume.
+    state: present
+   when: "'nvmen1p4' in {{ ansible_facts['devices'] }}"
+  loop: "{{ volume_groups }}"
+
+- name: create the logical volumes
+  lvol:
+    vg: "{{ item.vg_name }}" 
+    # The name of the logical volume.
+    lv: "{{ item.lv_name }}"
+    # The size of the logical volume.
+    size: "{{ item.size }}"
+    state: present
+    # shrink or remove require force
+    #force: true
+  loop: "{{ logical_volumes }}"
+   when: item.name not in ansible_lvm['lvs']
+
+- name: set filesystem on logical volume
+  filesystem:
+    fstype: "{{ item.fstype }}"
+    dev: "/dev/{{ item.vg_name }}/{{ item.lv_name }}"
+  loop: "{{ logical_volumes }}"
+
+- name: mount each logical volume
+  mount:
+    path: "{{ item.mount_path }}"
+    src: "/dev/{{ item.vg_name }}/{{ item.lv_name }}"
+    fstype: "{{ item.fstype }}"
+    state: mounted
+  loop: "{{ logical_volumes }}"
+
+- name: test mount
+  file:
+    path: "{{ item.mount_path }}/test.delete"
+    state: touch
+  loop: "{{ logical_volumes }}"
+
+- name: test mount
+  file:
+    path: "{{ item.mount_path }}/test.delete"
+    state: absent
+  loop: "{{ logical_volumes }}"
+...
