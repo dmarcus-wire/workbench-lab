@@ -11,7 +11,7 @@
   # rh_acct encyrpted with ansible vault
   # set variables below in the ../inventory/group_vars/all
     - name: update subscription manager
-      community.general.redhat_subscription:
+      redhat_subscription:
         state: present
         username: "{{ username }}"
         password: "{{ password }}"
@@ -22,10 +22,6 @@
           role: "{{ role }}"
           service_level_agreement: "{{ sla }}" 
           sync: true
-#        pool_ids:
-#          - "{{ ansible }}" 
-#          - "{{ epool }}"
-#      register: repos_out
 
     - name: register insights
       shell:
@@ -33,4 +29,10 @@
       register: insights
       changed_when: "'Success' in insights.stdout"
 
+    - command:
+        cmd: subscription-manager repos --list-enabled
+      register: repos
+
+    - debug:
+        var: repos.stdout_lines
 ...

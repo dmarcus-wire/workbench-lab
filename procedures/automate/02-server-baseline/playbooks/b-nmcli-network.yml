@@ -10,7 +10,7 @@
 
   tasks: 
     - name: configure "{{ conn_name }}"
-      community.general.nmcli: 
+      nmcli: 
         type: "{{ conn_type }}"
         ifname: "{{ ifname }}"
         conn_name: "{{ conn_name }}"

@@ -1,9 +1,12 @@
 ---
 - name: configure additional repos
   yum_repository:
-    name: "{{ item.name }}" 
-    description: "{{ item.desc }}"
+    name: "{{ item.id }}"
+    description: "{{ item.description }}"
     baseurl: "{{ item.url }}"
     file: redhat
-    enabled: true
+    enabled: "{{ item.enabled }}"
   loop: "{{ repos }}"
+
+
+

@@ -13,10 +13,6 @@
       role: "{{ role }}"
       service_level_agreement: "{{ sla }}" 
       sync: true
-    pool_ids:
-      - "{{ ansible }}" 
-      - "{{ epool }}"
-  register: repos_out
 
 - name: register insights
   shell:
