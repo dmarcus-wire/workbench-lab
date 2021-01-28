@@ -1,4 +1,9 @@
 ---
+- name: install rear software
+  yum:
+    name: "{{ rear }}"
+    state: latest
+
 - name: produce bootable image
   shell:
     cmd: rear mkrescue -v

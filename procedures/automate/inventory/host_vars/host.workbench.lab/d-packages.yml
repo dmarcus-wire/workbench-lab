@@ -1,6 +1,5 @@
 ---
 packages:
-- dnf-automatic
 - cockpit
 - cockpit-composer
 - cockpit-dashboard
@@ -9,18 +8,21 @@ packages:
 - cockpit-pcp
 - cockpit-podman
 - cockpit-session-recording
-- rear 
 - rhel-system-roles
 - redhat-support-tool
 - sshpass
 - ansible
+- git
+
+backup:
+- dnf-automatic
 
 rear:
 - genisoimage 
+- rear 
 - syslinux 
 - crash 
 - sos 
-
 
 virtual:
 - virt-install
@@ -28,4 +30,9 @@ virtual:
 - libvirt-nss
 - libvirt-daemon-config-network
 
+crc:
+- dnf
+- haproxy
+- policycoreutils-python-utils
+- setroubleshoot-server
 ...

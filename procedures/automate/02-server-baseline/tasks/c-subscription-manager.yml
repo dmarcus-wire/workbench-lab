@@ -2,7 +2,7 @@
 # rh_acct encyrpted with ansible vault
 # set variables below in the ../inventory/group_vars/all
 - name: update subscription manager
-  community.general.redhat_subscription:
+  redhat_subscription:
     state: present
     username: "{{ username }}"
     password: "{{ password }}"

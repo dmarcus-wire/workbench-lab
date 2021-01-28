@@ -15,18 +15,18 @@
         var: "{{ secure_update }}"
 
     - name: ensure firewall is enabled and running
-      ansible.builtin.service:
+      service:
         name: firewalld
         state: started
         enabled: true
 
     - name: ensure selinux is enforcing
-      ansible.builtin.selinux:
+      selinux:
         policy: targeted
         state: enforcing
 
     - name: prohibit superuser login via ssh
-      ansible.builtin.lineinfile:
+      lineinfile:
         path: /etc/ssh/sshd_config
         state: present
         regex: '^PermitRootLogin '
@@ -34,7 +34,7 @@
         line: 'PermitRootLogin no' 
 
     - name: prohibit password based authentication for ssh
-      ansible.builtin.lineinfile:
+      lineinfile:
         path: /etc/ssh/sshd_config
         state: present
         regex: '^PasswordAuthentication '

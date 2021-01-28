@@ -1,7 +1,7 @@
 ---
 # Normally, when Ansible runs a play, it makes sure that all managed hosts have completed each task before starting the next task. Serial keyword to run the hosts through the play in batches.
 - name: configure network connection
-  hosts: all
+  hosts: host 
   become: true 
   serial: 1  
 

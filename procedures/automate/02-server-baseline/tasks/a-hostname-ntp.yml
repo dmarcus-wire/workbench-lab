@@ -11,6 +11,6 @@
     line: "{{ ip_addr}} {{ fqdn }} {{ hostname }}"
 
 - name: set timezone
-  community.general.timezone:
+  timezone:
     name: "{{ timezone }}"
 ...

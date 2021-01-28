@@ -16,7 +16,7 @@
       loop: "{{ logical_volumes }}"
 
     - name: create new partition 
-      community.general.parted:
+      parted:
         device: /dev/nvme0n1
         # Creates the partition number 4
         number: "{{ item.number }}"
@@ -34,7 +34,7 @@
       loop: "{{ partitions }}"
 
     - name: create the volume groups
-      community.general.lvg: 
+      lvg: 
         # The name of the volume group.
         vg: "{{ item.name }}"
         # List of comma-separated devices to be configured as physical volumes for the volume group.

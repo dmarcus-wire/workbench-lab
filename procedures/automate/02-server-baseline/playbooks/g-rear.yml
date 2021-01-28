@@ -6,6 +6,11 @@
   gather_facts: false
 
   tasks:
+    - name: install rear
+      yum:
+        name: "{{ rear }}"
+        state: present
+
     - name: produce bootable image
       shell:
         cmd: rear mkrescue -v

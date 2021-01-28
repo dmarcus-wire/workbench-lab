@@ -1,6 +1,6 @@
 ---
 - name: baseline config for all servers
-  hosts: web
+  hosts: host
   become: true
   vars_files: 
     - files/rhsm

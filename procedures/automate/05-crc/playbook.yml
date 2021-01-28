@@ -1,0 +1,168 @@
+---
+- name: configure host for crc
+  hosts: host
+  become: true
+  vars_prompt:
+    - name: SECRET_KEY
+      prompt: enter crc pull secret from https://cloud.redhat.com/openshift/create 
+      unsafe: true
+    
+    - name: SERVER_IP
+      prompt: enter host ip address
+      unsafe: false
+
+    - name: CRC_IP
+      prompt: enter crc ip address
+      unsafe: false
+
+  tasks:
+    - name: fetch the crc tar
+      get_url:
+        url: https://mirror.openshift.com/pub/openshift-v4/clients/crc/latest/crc-linux-amd64.tar.xz
+        dest: /tmp
+      tags: 
+        - download
+
+    - name: untar crc 
+      unarchive:
+        src: /tmp/crc-linux-amd64.tar.xz
+        dest: /tmp
+      tags: 
+        - download
+    
+    - name: move crc to $PATH
+      copy:
+        src: /tmp/crc
+        dest: /usr/local/bin
+      tags: 
+        - download
+
+    - name: run crc-setup
+      expect:
+        cmd: crc setup
+        responses: 
+           # case insensitive key
+          (?i)secret: "{{ SECRET_KEY }}"
+      # dont show key in logs
+      no_log: true
+      tags:
+         - setup
+
+    - name: run crc start
+      command:
+        cmd: crc start
+      tags:
+        - setup
+
+    - name: install remote access packages
+      yum:
+        name: "{{ crc }}"
+      tags:
+        - configure
+    
+    - name: ensure firewall is started
+      block: 
+        - name: firewall started
+          service:
+            name: firewalld
+            state: started
+      rescue: 
+        - name: if error, restart
+          service:
+            name: firewalld
+            state: restarted
+      
+    - name: open firewall ports for remote crc access
+      firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+      loop: 
+        - 80/tcp
+        - 6443/tcp
+        - 443/tcp
+      tags:
+        - configure
+
+    - name: restart firewalld
+      service:
+        name: fierwalld
+        state: restarted
+      tags:
+        - configure
+
+    - name: configure firewall
+      seport: 
+        ports: 6443
+        setype: http_port_t
+        proto: tcp
+        state: present
+      tags:
+        - configure
+    
+    - name: create backup copy of HAPROXY configure
+      copy:
+        src: /etc/haproxy/haproxy.cfg
+        dest: /etc/haproxy/haproxy.cfg.orig
+      tags:
+        - configure
+
+    - name: configure HAPROXY
+      template:
+        src: ../files/haproxy.cfg.j2
+        dest: /etc/haproxy/haproxy.cfg
+      tags:
+        - configure
+
+    - name: start HAPROXY
+      service:
+        name: haproxy
+        state: started
+      tags:
+        - configure
+
+#    - name: configure DNS
+#     lineinfile:
+#        path: /etc/NetworkManager/NetworkManager.cfg
+#        backup: true
+#        firstmatch: true
+#        insertafter: "^[main]"
+#        line: "dns=dnsmasq"
+
+#    - name: configure DNS connection priority
+#      blockinfile:
+#        path: /etc/NetworkManager/NetworkManager.cfg
+#        backup: true
+#        firstmatch: true
+#        insertafter: "^dns=dnsmasq"
+#        block: |
+#          [connection]
+#          ipv4.dns-priority=200
+#          ipv6.dns-priority=200
+
+    - name: copy over 00-dns-masq.conf to host
+      template:
+        src: ../files/00-dns-masq.conf.j2
+        dest: /etc/NetworkManager/conf.d/00-use-dns-masq.conf
+      tags: 
+        - configure
+
+    - name: copy over 01-crc.conf to host
+      template:
+        src: ../files/01-crc.conf.j2
+        dest: /etc/NetworkManager/conf.d/01-crc.conf
+      tags:
+        - configure
+
+    - name: reload NetworkManager
+      service:
+        name: NetworkManager
+        state: reloaded
+      tags:
+        - configure
+
+    - name: capture crc console url
+      command:
+        cmd: crc console --url && crc console --credentials
+      tags:
+        - configure

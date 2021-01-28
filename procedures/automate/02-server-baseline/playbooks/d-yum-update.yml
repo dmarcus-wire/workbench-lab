@@ -1,6 +1,6 @@
 ---
 - name: system update
-  hosts: all
+  hosts: host 
   become: true
   gather_facts: false
 

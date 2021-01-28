@@ -7,6 +7,11 @@
   ignore_errors: true
 
   tasks:
+    - name: install virt
+      yum:
+        name: "{{ virtual }}"
+        state: latest
+
     - name: install virt module
       shell:
         cmd: "yum module install -y virt"

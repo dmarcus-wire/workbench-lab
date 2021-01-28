@@ -13,8 +13,8 @@ volume_groups:
       dev: /dev/nvme0n1p4
 
 logical_volumes:
-    - lv_name: http-server
-      size: 50g
+    - lv_name: tower
+      size: 100g
       fstype: xfs
       vg_name: vmstore
-      mount_path: /mnt/http-server
+      mount_path: /mnt/tower

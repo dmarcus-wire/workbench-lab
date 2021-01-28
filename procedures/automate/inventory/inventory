@@ -1,6 +1,12 @@
 [host]
 host.workbench.lab
 
+[workstation]
+workstation.workbench.lab
+
+[edge]
+pi4.workbench.lab
+
 [web]
 vm01.workbench.lab
 

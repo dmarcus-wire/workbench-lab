@@ -5,13 +5,13 @@
     state: present
 
 - name: set upgrade_type to "{{ upgrade_type }}"
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: "{{ dnf_auto_path }}"
     regexp: '^upgrade_type ='
     line: "{{ upgrade_type }}"
 
 - name: set the name of the system to "{{ ansible_facts['hostname'] }}"
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: "{{ dnf_auto_path }}"
     regexp: '^system_name'
     line: system_name = "{{ ansible_facts['hostname'] }}"

@@ -1,6 +1,6 @@
 ---
 - name: configure hostname
-  hosts: host 
+  hosts: host
   become: true
   gather_facts: false
   serial: 1

@@ -1,0 +1,6 @@
+[packages]
+- dnsmasq
+- openssh-server
+- traceroute
+- vim
+- cockpit-*
