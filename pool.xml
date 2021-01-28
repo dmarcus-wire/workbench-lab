@@ -1,0 +1,12 @@
+<pool type='logical'>
+  <name>ansible</name>
+  <source>
+    <device path='/dev/nvme0n1p4'/>
+    <name>tower</name>
+    <format type='lvm2'/>
+  </source>
+  <target>
+    <path>/mnt/ansible_lvm</path>
+  </target>
+</pool>
+
