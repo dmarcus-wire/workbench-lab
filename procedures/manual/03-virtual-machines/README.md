@@ -36,41 +36,66 @@
 
 # Command Line
 
-## Verify / Create Bridge for VM access
-> Bridged mode is required to configure externally visible vms 
+## Create network bridge
+1. create bridge interface `bridge0`
+1. set bridge slave interface between physical device eno1 (the slave) and bridge connection `bridge0`
+1. check status and names of interfaces to add to bridge
+1. assign interfaces `eno1` to bridge `bridge0`
+1. configure `bridge0` connection
+1. configure SPT priority
+1. enable autoconnection for `bridge0`
+1. enable autoconnection for `bridge0` slaves 
+1. up the connection
+```
+# nmcli connection add type bridge con-name bridge0 ifname bridge0
+# nmcli con add type bridge-slave ifname eno1 master bridge0
+# nmcli dev 
+# nmcli con mod eno1 master bridge0
+# nmcli con mod bridge0 ipv4.addresses '192.168.10.2/24'
+# nmcli con mod bridge0 ipv4.gateway '192.168.10.1'
+# nmcli con mod bridge0 ipv4.dns '208.67.222.222,208.67.220.220'
+# nmcli con mod bridge0 ipv4.dns-search 'workbench.lab'
+# nmcli con mod bridge0 ipv4.method manual
+# nmcli con mod bridge0 bridge.priority '16384'
+# nmcli con mod bridge0 connection.autoconnect 1
+# nmcli con mod bridge0 connection.autoconnect-slaves 1
+# nmcli con up bridge0
+# ping 192.168.10.1
+```
 
-1. Review the ip config of the ethernet interface
-1. Create a bridge connection for eno1
-1. Review the interfaces
-1. A bridge slave interface needs to be established between physical device eno1 (slave) and bridge0 connection (master)
-1. Ping tests should work (if bridge-slave-eno1 is up)
-1. Bridge connection is active, but not visible to KVM
-1. Write bridge file for KVM network configuration
-1. Use file to define the new network
-1. Start the new bridge0 network
-1. List networks 
+> [Reference](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-a-network-bridge_configuring-and-managing-networking#configuring-a-network-bridge-using-nmcli-commands_configuring-a-network-bridge)
+
+
+> [Reference](https://www.techotopia.com/index.php/Creating_a_RHEL_KVM_Networked_Bridge_Interface#:~:text=By%20default%2C%20the%20KVM%20virtualization,which%20virtual%20machines%20may%20connect.&text=Network%20bridges%20may%20be%20configured,via%20the%20Cockpit%20web%20interface) 
+
+## Add the KVM network config
+Before the bridge can be used by a virtual machine it must be declared and added to the KVM network configuration.
+
+1. create the bridge xml
+1. define a new network configuration for bridge0
+1. start bridge0
+1. autostart bridge0
+1. verify virtual networks
+1. change from the default virtual network, locate the <interface> section 
 
 ```
-# ip addr
-# nmcli con add type bridge con-name bridge0 ifname bridge0 ipv4.address 192.168.86.240 ipv4.gateway 192.168.86.1 ipv4.dns ‘208.67.222.222,208.67.220.220’ ipv4.method manual
-# nmcli dev
-# nmcli con add type bridge-slave ifname eno1 master bridge0
-# nmcli con down eno1
-# nmcli con up bridge0
-# virsh net-list --all 
-# vim /tmp/bridge0.xml
+# vim bridge.xml
+
 <network>
-  <name>bridge0</name>
-  <forward mode=”bridge” />
-  <bridge name=”bridge0” />
+  <name>br0</name>
+  <forward mode="bridge"/>
+  <bridge name="bridge0" />
 </network>
-# virsh net-define /tmp/bridge0.xml
+
+# virsh net-define bridge.xml
 # virsh net-start bridge0
 # virsh net-autostart bridge0
 # virsh net-list --all
+# virsh edit tower
+> change interface to bridge0
 ```
 
-> Reference: https://www.techotopia.com/index.php/Creating_a_RHEL_KVM_Networked_Bridge_Interface#:~:text=By%20default%2C%20the%20KVM%20virtualization,which%20virtual%20machines%20may%20connect.&text=Network%20bridges%20may%20be%20configured,via%20the%20Cockpit%20web%20interface 
+(Reference)[https://www.techotopia.com/index.php/Creating_a_RHEL_KVM_Networked_Bridge_Interface]
 
 ## Create LVM-base Storage for VM
 1. create partition `/dev/nvme0n1p4` (if not created)
